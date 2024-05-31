@@ -1,8 +1,15 @@
-import { CustomSectionGroup, Award, Education, Experience, Project, Skill, URL } from "@reactive-resume/schema";
+import {
+  CustomSectionGroup,
+  Award,
+  Education,
+  Experience,
+  Project,
+  Skill,
+  URL,
+} from "@reactive-resume/schema";
 import { cn, isUrl, linearTransform } from "@reactive-resume/utils";
 import get from "lodash.get";
 import React, { Fragment } from "react";
-
 import { useArtboardStore } from "../store/artboard";
 import { TemplateProps } from "../types/template";
 
@@ -64,26 +71,27 @@ const Link = ({ url, icon, label, className }: LinkProps) => {
   );
 };
 
-type SectionProps<T> = {
-  section: SectionWithItem<T>| CustomSectionGroup;
-  children?: (item: T) => React.ReactNode;
+interface SectionProps<T> {
+  section: T;
+  children: React.ReactNode;
   className?: string;
-  urlKey?: keyof T;
-  levelKey?: keyof T;
-  summaryKey?: keyof T;
-  keywordsKey?: keyof T;
-};
+  urlKey?: keyof T; // added urlKey prop
+  summaryKey?: keyof T; // added summaryKey prop
+  levelKey?: keyof T; // added levelKey prop
+  keywordsKey?: keyof T; // added keywordsKey prop
+}
 
 const Section = <T,>({
   section,
   children,
   className,
   urlKey,
-  levelKey,
   summaryKey,
+  levelKey,
   keywordsKey,
 }: SectionProps<T>) => {
   if (!section.visible || !section.items.length) return null;
+
   return (
     <section id={section.id} className="grid">
       <div className="mb-2 hidden font-bold text-primary group-[.main]:block">
@@ -119,14 +127,9 @@ const Section = <T,>({
               >
                 <div>{children?.(item as T)}</div>
 
-const isEmptyString = (str) => {
-  return !str || str.trim() === '';
-};
-
-
-if (summary !== undefined && !isEmptyString(summary)) {
-  return <div className="wysiwyg" dangerouslySetInnerHTML={{ __html: summary }} />;
-}
+                {summary !== undefined && !isEmptyString(summary) && (
+                  <div className="wysiwyg" dangerouslySetInnerHTML={{ __html: summary }} />
+                )}
 
                 {level !== undefined && level > 0 && <Rating level={level} />}
 
@@ -203,12 +206,9 @@ const Projects = () => {
     <Section<Project> section={section} urlKey="url" summaryKey="summary" keywordsKey="keywords">
       {(item) => (
         <div>
-          <div>
-            <div className="font-bold">{item.name}</div>
-            <div>{item.description}</div>
-
-            <div className="font-bold">{item.date}</div>
-          </div>
+          <div className="font-bold">{item.name}</div>
+          <div>{item.description}</div>
+          <div className="font-bold">{item.date}</div>
         </div>
       )}
     </Section>
